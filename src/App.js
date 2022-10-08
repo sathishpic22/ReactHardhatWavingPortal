@@ -32,6 +32,7 @@ const contractaddress="0x0410f1fE4482798e5899fD9A6C60b538D0777494";
     } catch (error) {
       console.log(error);
     }
+
   }
 
   /**
@@ -53,6 +54,7 @@ const contractaddress="0x0410f1fE4482798e5899fD9A6C60b538D0777494";
     } catch (error) {
       console.log(error)
     }
+
   }
 
   
@@ -138,5 +140,6 @@ async function newwave(){
     </div>
   );
 }
+
 
 export default App;
