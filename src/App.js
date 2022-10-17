@@ -1,14 +1,13 @@
 
 import './App.css';
-import lockAbi from './lockAbi';
+import lockAbi from './lockAbi.json';
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const [currentAccount, setCurrentAccount] = useState("");
-  const [messgae, setMessage] = useState("");
-  const [count, setCount] = useState("");
-const contractaddress="0x0410f1fE4482798e5899fD9A6C60b538D0777494";
+  const [count,setCount]=useState("");
+
+const contractaddress="0xcF01ae2cb8f816CF0d18bFD8EC043652B6907969";
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
@@ -68,7 +67,9 @@ async function wave(){
       const wavePortalContract = new ethers.Contract(contractaddress, lockAbi.abi, signer);
 
       let count = await wavePortalContract.waveCount();
-      console.log("Retrieved total wave count...", count.toNumber());
+
+      console.log("The Total Count is .....",count.toNumber);
+      setCount(count.toNumber());
     } else {
       console.log("Ethereum object doesn't exist!");
     }
@@ -99,7 +100,6 @@ async function newwave(){
       const count=await wavePortalContract.newWave("My wave ");
        console.log("New Wave is mining......");
        console.log(count); 
-      
           const tx = await wallet.sendTransaction({
               to: currentAccount,
               value: ethers.utils.parseEther("0.0000050")
@@ -124,10 +124,15 @@ async function newwave(){
   return (
     <div className="App">
 
+
+      <h1>WAVE PORTAL</h1>
+      <h1>{currentAccount}</h1>
+
+  
 <button className="waveButton" onClick={wave}>
     WaveCount
 </button>
-
+<h1> Total Wave Count Is : {count}</h1>
 <button className="waveButton" onClick={newwave}>
     NewWave
 </button>
@@ -137,6 +142,7 @@ async function newwave(){
             Connect Wallet
           </button>
         )}
+
     </div>
   );
 }
