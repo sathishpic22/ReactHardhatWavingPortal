@@ -6,8 +6,8 @@ import { ethers } from "ethers";
 function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [count,setCount]=useState("");
-
-const contractaddress="0xcF01ae2cb8f816CF0d18bFD8EC043652B6907969";
+  const [message,setMessage]=useState("");
+const contractaddress="0xb1d26f8b073540AC24852E0d55E8BfCCD0F40183";
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
@@ -78,7 +78,31 @@ async function wave(){
   }
 }
 
+async function fullwavelist(){
+  try {
+    const { ethereum } = window;
+
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const wavePortalContract = new ethers.Contract(contractaddress, lockAbi.abi, signer);
+
+      let count = await wavePortalContract.waveList();
+
+      console.log("The Total Count is .....",count);
+    
+    } else {
+      console.log("Ethereum object doesn't exist!");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
 async function newwave(){
+
   try {
     const { ethereum } = window;
 
@@ -97,7 +121,7 @@ async function newwave(){
       
       const signer = provider.getSigner();
       const wavePortalContract = new ethers.Contract(contractaddress, lockAbi.abi, signer);
-      const count=await wavePortalContract.newWave("My wave ");
+      const count=await wavePortalContract.newWave(message);
        console.log("New Wave is mining......");
        console.log(count); 
           const tx = await wallet.sendTransaction({
@@ -116,6 +140,11 @@ async function newwave(){
   }
 }
 
+const handleChange = event => {
+  setMessage(event.target.value);
+
+};
+
 
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -123,25 +152,38 @@ async function newwave(){
 
   return (
     <div className="App">
+  <h1>WAVE PORTAL</h1>
+      <p>Wallet Connected : <b>{currentAccount}</b></p>
 
-
-      <h1>WAVE PORTAL</h1>
-      <h1>{currentAccount}</h1>
-
-  
 <button className="waveButton" onClick={wave}>
     WaveCount
-</button>
-<h1> Total Wave Count Is : {count}</h1>
-<button className="waveButton" onClick={newwave}>
+</button> &ensp;  &ensp; &ensp;
+<b> Total Wave Count Is : {count}</b>  <br></br><br></br>
+<input
+        type="text"
+        id="message"
+        name="message"
+        onChange={handleChange}
+        value={message}
+      />
+      
+      &ensp;  &ensp; &ensp;
+<button className="waveButton" onClick={newwave} >
     NewWave
 </button>
+<br></br><br></br>
+<button className="waveButton" onClick={fullwavelist} >
+    AllWaves
+</button>
+
       
      {!currentAccount && (
           <button className="waveButton" onClick={connectWallet}>
             Connect Wallet
           </button>
         )}
+
+
 
     </div>
   );
