@@ -7,7 +7,10 @@ function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [count,setCount]=useState("");
   const [message,setMessage]=useState("");
-const contractaddress="0xb1d26f8b073540AC24852E0d55E8BfCCD0F40183";
+  const accounts = [''];
+  const [myArray, updateMyArray] = useState([]) ;
+  let waveListCount;
+const contractaddress="0xAb34FAD24450f5C98b96091265adFF1C04a04dC4";
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
@@ -78,8 +81,10 @@ async function wave(){
   }
 }
 
+
 async function fullwavelist(){
   try {
+
     const { ethereum } = window;
 
     if (ethereum) {
@@ -87,11 +92,18 @@ async function fullwavelist(){
       const signer = provider.getSigner();
       const wavePortalContract = new ethers.Contract(contractaddress, lockAbi.abi, signer);
 
-      let count = await wavePortalContract.waveList();
+ waveListCount = await wavePortalContract.waveList();
+for(let i=0;i<waveListCount.length;i++){
+  accounts.push("address:",waveListCount[i][0],"Message:",waveListCount[i][1]);
+ 
+}
+console.log("The Total Count is .....",waveListCount,"length :",waveListCount.length);
 
-      console.log("The Total Count is .....",count);
+    updateMyArray(accounts);
+  
+    } 
     
-    } else {
+    else {
       console.log("Ethereum object doesn't exist!");
     }
   } catch (error) {
@@ -99,7 +111,18 @@ async function fullwavelist(){
   }
 }
 
+ const listItems = myArray.map((number) =>
 
+ <table key={number}>
+        
+        <tr>
+          <td>{number}</td>
+        </tr>
+</table>
+
+  
+  
+);
 
 async function newwave(){
 
@@ -108,12 +131,8 @@ async function newwave(){
 
     if (ethereum) {
       const provider = new ethers.providers.Web3Provider(ethereum);
-      
-      const account1 = '0xc0BB46e0B7de8380cdF670186d2cFD2E9056b426' // Your account address 1
-      
       const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-
-      console.log("Connected", accounts[0]);
+console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
       
       const privateKey1 = '0d6aa040ab5fd085c9b209aa4cc0734d653bb3d44e273b647c4c886b02537b04' // Private key of account 1
@@ -154,11 +173,6 @@ const handleChange = event => {
     <div className="App">
   <h1>WAVE PORTAL</h1>
       <p>Wallet Connected : <b>{currentAccount}</b></p>
-
-<button className="waveButton" onClick={wave}>
-    WaveCount
-</button> &ensp;  &ensp; &ensp;
-<b> Total Wave Count Is : {count}</b>  <br></br><br></br>
 <input
         type="text"
         id="message"
@@ -166,12 +180,15 @@ const handleChange = event => {
         onChange={handleChange}
         value={message}
       />
-      
       &ensp;  &ensp; &ensp;
+
 <button className="waveButton" onClick={newwave} >
     NewWave
-</button>
-<br></br><br></br>
+</button><br></br><br></br>
+<button className="waveButton" onClick={wave}>
+    WaveCount
+</button> &ensp;  &ensp; &ensp;
+<b> Total Wave Count Is : {count}</b>  <br></br>  <br></br>
 <button className="waveButton" onClick={fullwavelist} >
     AllWaves
 </button>
@@ -182,6 +199,8 @@ const handleChange = event => {
             Connect Wallet
           </button>
         )}
+
+<p>{listItems}</p>
 
 
 
